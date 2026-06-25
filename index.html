@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Interactive L-ROM neutron elastic-scattering demonstrations.">
+  <title>L-ROM Interactive Demos</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #101b30;
+      --muted: #5d6a7d;
+      --line: #d9e1ea;
+      --panel: #ffffff;
+      --page: #f4f7fa;
+      --blue: #1769aa;
+      --red: #9d2924;
+      --green: #237a4b;
+      --shadow: 0 14px 34px rgba(23, 39, 63, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-width: 320px;
+      background: var(--page);
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      letter-spacing: 0;
+    }
+
+    .shell {
+      width: min(1180px, calc(100% - 40px));
+      margin: 0 auto;
+      padding: 44px 0 38px;
+    }
+
+    header {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 28px;
+      align-items: end;
+      padding-bottom: 28px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .eyebrow {
+      margin: 0 0 8px;
+      color: var(--blue);
+      font-size: 14px;
+      font-weight: 750;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(34px, 5vw, 58px);
+      line-height: 1.02;
+      letter-spacing: 0;
+    }
+
+    .intro {
+      max-width: 760px;
+      margin: 15px 0 0;
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.55;
+    }
+
+    .browser-note {
+      padding: 12px 15px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: var(--panel);
+      color: var(--muted);
+      font-size: 14px;
+      white-space: nowrap;
+    }
+
+    main {
+      padding: 30px 0 14px;
+    }
+
+    .section-heading {
+      margin: 0 0 18px;
+      font-size: 22px;
+    }
+
+    .demo-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .demo {
+      display: flex;
+      min-height: 330px;
+      flex-direction: column;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+    }
+
+    .preview {
+      position: relative;
+      height: 116px;
+      overflow: hidden;
+      border-bottom: 1px solid var(--line);
+      background:
+        linear-gradient(to right, transparent 0 14%, rgba(81, 108, 140, 0.12) 14% 14.4%, transparent 14.4% 42%, rgba(81, 108, 140, 0.12) 42% 42.4%, transparent 42.4% 70%, rgba(81, 108, 140, 0.12) 70% 70.4%, transparent 70.4%),
+        linear-gradient(to bottom, transparent 0 28%, rgba(81, 108, 140, 0.12) 28% 28.8%, transparent 28.8% 58%, rgba(81, 108, 140, 0.12) 58% 58.8%, transparent 58.8%),
+        #f8fafc;
+    }
+
+    .preview svg {
+      position: absolute;
+      inset: 12px;
+      width: calc(100% - 24px);
+      height: calc(100% - 24px);
+    }
+
+    .demo-body {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      padding: 21px;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-bottom: 14px;
+    }
+
+    .tag {
+      padding: 4px 8px;
+      border: 1px solid var(--line);
+      border-radius: 5px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 24px;
+      line-height: 1.2;
+    }
+
+    .description {
+      margin: 12px 0 22px;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    .open-demo {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      margin-top: auto;
+      border: 1px solid var(--ink);
+      border-radius: 5px;
+      background: var(--ink);
+      color: #fff;
+      font-size: 15px;
+      font-weight: 750;
+      text-decoration: none;
+      transition: transform 140ms ease, background 140ms ease;
+    }
+
+    .open-demo:hover {
+      transform: translateY(-1px);
+      background: #1d304e;
+    }
+
+    .open-demo:focus-visible {
+      outline: 3px solid rgba(23, 105, 170, 0.35);
+      outline-offset: 3px;
+    }
+
+    footer {
+      margin-top: 28px;
+      padding-top: 20px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 860px) {
+      header {
+        grid-template-columns: 1fr;
+        align-items: start;
+      }
+
+      .browser-note {
+        width: fit-content;
+      }
+
+      .demo-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .demo {
+        min-height: 0;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .shell {
+        width: min(100% - 24px, 1180px);
+        padding-top: 28px;
+      }
+
+      .intro {
+        font-size: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header>
+      <div>
+        <p class="eyebrow">Learned reduced-operator models</p>
+        <h1>L-ROM Interactive Demos</h1>
+        <p class="intro">
+          Explore neutron elastic-scattering cross sections and optical-potential
+          effects with fast, browser-based L-ROM emulators.
+        </p>
+      </div>
+      <div class="browser-note">No installation required</div>
+    </header>
+
+    <main>
+      <h2 class="section-heading">Choose an explorer</h2>
+      <div class="demo-grid">
+        <article class="demo">
+          <div class="preview" aria-hidden="true">
+            <svg viewBox="0 0 300 90" preserveAspectRatio="none">
+              <path d="M2,8 C32,10 48,20 65,47 C78,67 93,63 110,48 C129,31 150,40 166,53 C184,67 201,55 218,45 C239,33 258,44 298,48"
+                    fill="none" stroke="#1769aa" stroke-width="4"/>
+              <path d="M2,14 C34,17 51,29 67,55 C83,75 97,61 114,49 C132,37 150,48 167,59 C184,70 204,59 222,51 C243,42 262,51 298,55"
+                    fill="none" stroke="#9d2924" stroke-width="2.5" stroke-dasharray="7 5"/>
+            </svg>
+          </div>
+          <div class="demo-body">
+            <div class="tags">
+              <span class="tag">40Ca + n</span>
+              <span class="tag">14.1 MeV</span>
+              <span class="tag">Fixed energy</span>
+            </div>
+            <h2>Calcium at 14.1 MeV</h2>
+            <p class="description">
+              Turn individual optical-potential terms on and off, inspect their
+              radial shapes, and watch the differential and integrated cross sections respond.
+            </p>
+            <a class="open-demo" href="NEWDemo1LocalCalciumCrossSection14MeV.html">Open explorer</a>
+          </div>
+        </article>
+
+        <article class="demo">
+          <div class="preview" aria-hidden="true">
+            <svg viewBox="0 0 300 90" preserveAspectRatio="none">
+              <path d="M2,6 C24,10 39,29 52,58 C62,78 74,50 87,42 C101,33 111,65 126,68 C145,72 151,49 166,54 C183,60 189,76 205,70 C226,62 237,81 252,76 C270,69 284,84 298,80"
+                    fill="none" stroke="#9d2924" stroke-width="4"/>
+              <path d="M2,12 C25,16 41,34 54,61 C65,78 77,53 90,45 C104,37 115,66 129,70 C147,74 154,52 169,57 C185,62 192,77 208,72 C228,65 240,80 255,77 C273,72 286,83 298,82"
+                    fill="none" stroke="#1769aa" stroke-width="2.5" stroke-dasharray="7 5"/>
+            </svg>
+          </div>
+          <div class="demo-body">
+            <div class="tags">
+              <span class="tag">40Ca + n</span>
+              <span class="tag">100 MeV</span>
+              <span class="tag">High energy</span>
+            </div>
+            <h2>Calcium at 100 MeV</h2>
+            <p class="description">
+              Explore the same potential controls at higher beam energy, where
+              additional partial waves produce a more strongly structured angular distribution.
+            </p>
+            <a class="open-demo" href="NEWDemo1LocalCalciumCrossSection100MeV.html">Open explorer</a>
+          </div>
+        </article>
+
+        <article class="demo">
+          <div class="preview" aria-hidden="true">
+            <svg viewBox="0 0 300 90" preserveAspectRatio="none">
+              <g fill="#7c5ce0" opacity="0.7">
+                <circle cx="38" cy="65" r="4"/><circle cx="62" cy="48" r="4"/>
+                <circle cx="84" cy="70" r="4"/><circle cx="105" cy="37" r="4"/>
+                <circle cx="126" cy="56" r="4"/><circle cx="148" cy="26" r="4"/>
+                <circle cx="169" cy="66" r="4"/><circle cx="192" cy="43" r="4"/>
+                <circle cx="214" cy="20" r="4"/><circle cx="239" cy="54" r="4"/>
+                <circle cx="263" cy="32" r="4"/>
+              </g>
+              <path d="M16,76 L16,13 L282,13" fill="none" stroke="#101b30" stroke-width="2"/>
+              <circle cx="148" cy="26" r="7" fill="#d5483f" stroke="#fff" stroke-width="2"/>
+            </svg>
+          </div>
+          <div class="demo-body">
+            <div class="tags">
+              <span class="tag">Tin isotopes</span>
+              <span class="tag">5-100 MeV</span>
+              <span class="tag">Global model</span>
+            </div>
+            <h2>Tin isotope and energy explorer</h2>
+            <p class="description">
+              Move across the tin isotopic chain and beam energy, inspect the
+              Koning-Delaroche potential, and compare selected experimental data with L-ROM predictions.
+            </p>
+            <a class="open-demo" href="NEWDemo2GlobalCrossSectionTin.html">Open explorer</a>
+          </div>
+        </article>
+      </div>
+    </main>
+
+    <footer>
+      These demonstrations run locally in the browser after the page loads.
+      For the best experience, open them on a desktop or tablet-sized screen.
+    </footer>
+  </div>
+</body>
+</html>
